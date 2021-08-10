@@ -60,6 +60,8 @@ export class Transformer {
 
     this.log(`Resizing ${id} with options:`, JSON.stringify(options))
 
+    console.log(`Resizing ${id} with options:`, JSON.stringify(options))
+
     const originalImage = await this.cachedOriginalImage.fetch(id, imageAdapter)
 
     if (!originalImage) {

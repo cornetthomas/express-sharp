@@ -1,6 +1,6 @@
 {
   "name": "express-sharp",
-  "version": "4.2.33",
+  "version": "4.3.0",
   "description": "Real-time image processing for your express application",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,7 +12,9 @@
     "etag": "^1.8.1",
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.28.2",
-    "tsyringe": "^4.2.0"
+    "tsyringe": "^4.2.0",
+    "smartcrop": "^2.0.4",
+    "smartcrop-sharp": "^2.0.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^13.0.0",
@@ -42,7 +44,6 @@
     "eslint-plugin-sort-keys-fix": "^1.1.1",
     "express": "^4.17.1",
     "got": "^11.5.0",
-    "husky": "^7.0.0",
     "jest": "^27.0.0",
     "keyv": "^4.0.0",
     "lint-staged": "^11.0.0",
@@ -66,15 +67,14 @@
     "clean": "rimraf dist",
     "start:example": "DEBUG=express-sharp* nodemon --exec 'node -r ts-node/register' -w . --inspect example/app.ts",
     "lint": "eslint --cache .",
-    "test": "jest",
-    "prepare": "husky install"
+    "test": "jest"
   },
   "engines": {
     "node": ">= 12.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pmb0/express-sharp.git"
+    "url": "git+https://github.com/cornetthomas/express-sharp.git"
   },
   "keywords": [
     "express",

@@ -29,6 +29,7 @@ export enum QueryParams {
   progressive = 'p',
   crop = 'c',
   gravity = 'g',
+  smartcrop = 'sc',
 }
 
 export interface Signer {
