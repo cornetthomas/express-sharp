@@ -1,6 +1,6 @@
 {
-  "name": "express-sharp",
-  "version": "4.3.0",
+  "name": "@thomascornet/express-sharp",
+  "version": "4.3.2",
   "description": "Real-time image processing for your express application",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -63,6 +63,7 @@
   "scripts": {
     "build:test": "tsc --noEmit",
     "build": "tsc --build tsconfig.build.json",
+    "prepack": "tsc --build tsconfig.build.json",
     "prebuild": "yarn clean",
     "clean": "rimraf dist",
     "start:example": "DEBUG=express-sharp* nodemon --exec 'node -r ts-node/register' -w . --inspect example/app.ts",
@@ -85,8 +86,8 @@
   "author": "Philipp Busse",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pmb0/express-sharp/issues"
+    "url": "https://github.com/cornetthomas/express-sharp.git"
   },
-  "homepage": "https://github.com/pmb0/express-sharp#readme",
+  "homepage": "https://github.com/cornetthomas/express-sharp.git#readme",
   "optionalDependencies": {}
 }

@@ -6,6 +6,8 @@ import { format, ImageAdapter, Result } from './interfaces'
 import { getLogger } from './logger'
 import { ObjectHash } from './object-hash.service'
 import { ResizeDto } from './resize.dto'
+const smartcrop = require('smartcrop-sharp');
+
 
 const DEFAULT_CROP_MAX_SIZE = 2000
 
@@ -78,7 +80,22 @@ export class Transformer {
       options.format = (await transformer.metadata()).format as format
     }
 
-    if (options.crop) {
+    if(options.smartcrop) {
+      const [cropWidth, cropHeight] = this.getCropDimensions(
+        this.cropMaxSize,
+        options.width,
+        options.height,
+      )
+
+       console.log("c w&h: " + cropWidth + "&" + cropHeight)
+
+      const result = await smartcrop.crop(originalImage, { width: cropWidth, height: cropHeight })
+      const crop = result.topCrop;
+      console.log(crop)
+      transformer
+        .extract({ width: crop.width, height: crop.height, left: crop.x, top: crop.y })
+        .resize(cropWidth, cropWidth)
+    } else if (options.crop) {
       const [cropWidth, cropHeight] = this.getCropDimensions(
         this.cropMaxSize,
         options.width,

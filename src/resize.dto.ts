@@ -8,7 +8,7 @@ import {
   IsOptional,
   IsString,
   Max,
-  Min,
+  Min
 } from 'class-validator'
 import 'reflect-metadata'
 import { GravityEnum } from 'sharp'
@@ -53,6 +53,10 @@ export class ResizeDto {
   @Transform((value) => value === 'true')
   @IsBoolean()
   public crop: boolean = false
+
+  @Transform((value) => value === 'true')
+  @IsBoolean()
+  public smartcrop: boolean = false
 
   @IsIn([
     'north',
