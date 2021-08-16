@@ -2,6 +2,7 @@ import { validate as validate_, ValidationError } from 'class-validator'
 import { NextFunction, Request, Response } from 'express'
 import { BadRequestException } from '../http-exception'
 
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function validate<T extends {}>(Dto: {
   new (...args: any[]): T
@@ -23,7 +24,7 @@ export function validate<T extends {}>(Dto: {
 
         next(new BadRequestException(message || 'Unknown error'))
       } else {
-        ;(res.locals as { dto: T }).dto = dto
+        (res.locals as { dto: T }).dto = dto
         next()
       }
     } catch (error) {

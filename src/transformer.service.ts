@@ -20,6 +20,7 @@ export class Transformer {
     private readonly objectHasher: ObjectHash,
     private readonly cache: Keyv<Result>,
     private readonly cachedOriginalImage: CachedImage,
+    private readonly cachedOverlayImage: CachedImage,
   ) {}
 
   getCropDimensions(maxSize: number, width: number, height?: number): number[] {
@@ -62,8 +63,6 @@ export class Transformer {
 
     this.log(`Resizing ${id} with options:`, JSON.stringify(options))
 
-    console.log(`Resizing ${id} with options:`, JSON.stringify(options))
-
     const originalImage = await this.cachedOriginalImage.fetch(id, imageAdapter)
 
     if (!originalImage) {
@@ -74,7 +73,13 @@ export class Transformer {
       }
     }
 
+
     const transformer = sharp(originalImage).rotate()
+
+    if(options.blur) {
+      this.log('Apply blur: ' + options.blurSigma)
+      transformer.blur(options.blurSigma) 
+    }
 
     if (!options.format) {
       options.format = (await transformer.metadata()).format as format
@@ -86,12 +91,8 @@ export class Transformer {
         options.width,
         options.height,
       )
-
-       console.log("c w&h: " + cropWidth + "&" + cropHeight)
-
       const result = await smartcrop.crop(originalImage, { width: cropWidth, height: cropHeight })
       const crop = result.topCrop;
-      console.log(crop)
       transformer
         .extract({ width: crop.width, height: crop.height, left: crop.x, top: crop.y })
         .resize(cropWidth, cropWidth)
@@ -109,6 +110,18 @@ export class Transformer {
         fit: 'inside',
         withoutEnlargement: true,
       })
+    }
+
+    // Add overlay after cropping
+    if(options.overlay) {
+      this.log('Applying overlay')
+      var overlayImage = await this.cachedOverlayImage.fetch(options.overlayImage, imageAdapter)
+
+      overlayImage = await sharp(overlayImage).resize(200, 200, {fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 0.0 },}).flatten({ background: '#ff6600' } ).toBuffer()
+    
+      if(overlayImage)
+         this.log('Overlay image retrieved')
+         transformer.composite([{ input: overlayImage, top: 35, left: 35, }])
     }
 
     const image = await transformer

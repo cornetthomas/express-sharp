@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable no-magic-numbers */
 import {
-  IsBoolean,
-  IsIn,
+  IsBoolean, IsIn,
   IsInt,
   IsNumber,
   IsOptional,
@@ -56,7 +55,8 @@ export class ResizeDto {
 
   @Transform((value) => value === 'true')
   @IsBoolean()
-  public smartcrop: boolean = false
+  @IsOptional()
+  public smartcrop?: boolean = false
 
   @IsIn([
     'north',
@@ -75,4 +75,26 @@ export class ResizeDto {
 
   @IsUrl({ message: 'Invalid image url' })
   public url?: string
+
+  @Transform((value) => value === 'true')
+  @IsBoolean()
+  @IsOptional()
+
+  public overlay?: boolean = false
+
+  @IsString()
+  public overlayImage: string = ""
+
+  @Transform((value) => value === 'true')
+  @IsBoolean()
+  @IsOptional()
+
+  public blur?: boolean = false
+
+  @Transform((value) => Number(value))
+  @IsOptional()
+  @Min(0.3)
+  @Max(1000)
+
+  public blurSigma?: number;
 }

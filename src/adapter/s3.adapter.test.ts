@@ -1,5 +1,5 @@
-import { S3Adapter } from './s3.adapter'
 import { container } from 'tsyringe'
+import { S3Adapter } from './s3.adapter'
 
 const awsPromiseMock = jest
   .fn()

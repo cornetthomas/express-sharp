@@ -30,6 +30,11 @@ export enum QueryParams {
   crop = 'c',
   gravity = 'g',
   smartcrop = 'sc',
+  overlay = 'o',
+  overlayImage = "oi",
+
+  blur = "b",
+  blurSigma = "bs",
 }
 
 export interface Signer {
