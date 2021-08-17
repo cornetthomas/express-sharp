@@ -73,12 +73,16 @@ export class Transformer {
       }
     }
 
-
     const transformer = sharp(originalImage).rotate()
 
     if(options.blur) {
       this.log('Apply blur: ' + options.blurSigma)
       transformer.blur(options.blurSigma) 
+    }
+
+    if(options.greyscale) {
+      this.log('Convert to greyscale')
+      transformer.greyscale()
     }
 
     if (!options.format) {
@@ -117,11 +121,11 @@ export class Transformer {
       this.log('Applying overlay')
       var overlayImage = await this.cachedOverlayImage.fetch(options.overlayImage, imageAdapter)
 
-      overlayImage = await sharp(overlayImage).resize(200, 200, {fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 0.0 },}).flatten({ background: '#ff6600' } ).toBuffer()
+      overlayImage = await sharp(overlayImage).resize(options.overlayWidth, options.overlayHeight, {fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 0.0},}).flatten({ background: '#' + options.overlayBackgroundColor} ).toBuffer()
     
       if(overlayImage)
          this.log('Overlay image retrieved')
-         transformer.composite([{ input: overlayImage, top: 35, left: 35, }])
+         transformer.composite([{ input: overlayImage, top: options.overlayTop, left: options.overlayLeft, }])
     }
 
     const image = await transformer

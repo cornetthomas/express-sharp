@@ -85,10 +85,29 @@ export class ResizeDto {
   @IsString()
   public overlayImage: string = ""
 
+  @Transform(Number)
+  @IsOptional()
+  public overlayHeight?: number
+
+  @Transform(Number)
+  @IsOptional()
+  public overlayWidth?: number
+  @Transform(Number)
+  @IsOptional()
+  public overlayTop?: number
+
+  @IsString()
+  @IsOptional()
+  public overlayBackgroundColor?: string
+
+  @Transform(Number)
+  @IsOptional()
+  public overlayLeft?: number
+
+
   @Transform((value) => value === 'true')
   @IsBoolean()
   @IsOptional()
-
   public blur?: boolean = false
 
   @Transform((value) => Number(value))
@@ -97,4 +116,10 @@ export class ResizeDto {
   @Max(1000)
 
   public blurSigma?: number;
+
+  @Transform((value) => value === 'true')
+  @IsBoolean()
+  @IsOptional()
+
+  public greyscale?: boolean = false
 }
