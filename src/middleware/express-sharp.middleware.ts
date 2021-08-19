@@ -4,7 +4,7 @@ import {
   Request,
   RequestHandler,
   Response,
-  Router,
+  Router
 } from 'express'
 import Keyv from 'keyv'
 import { container } from 'tsyringe'
@@ -17,6 +17,7 @@ import { transformImage } from './transform-image.middleware'
 import { transformQueryParams } from './transform-query-params.middleware'
 import { useWebpIfSupported } from './use-webp-if-supported.middleware'
 import { validate } from './validator.middleware'
+
 
 function extractActiveMiddlewares(
   middlewaresDefinitions: [RequestHandler, boolean?][],

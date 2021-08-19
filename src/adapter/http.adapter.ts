@@ -1,5 +1,5 @@
+import got, { ExtendOptions, Got, RequestError } from 'got'
 import { ImageAdapter } from '../interfaces'
-import got, { Got, ExtendOptions, RequestError } from 'got'
 import { getLogger } from '../logger'
 
 export class HttpAdapter implements ImageAdapter {

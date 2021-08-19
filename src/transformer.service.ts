@@ -6,6 +6,8 @@ import { format, ImageAdapter, Result } from './interfaces'
 import { getLogger } from './logger'
 import { ObjectHash } from './object-hash.service'
 import { ResizeDto } from './resize.dto'
+const smartcrop = require('smartcrop-sharp');
+
 
 const DEFAULT_CROP_MAX_SIZE = 2000
 
@@ -18,6 +20,7 @@ export class Transformer {
     private readonly objectHasher: ObjectHash,
     private readonly cache: Keyv<Result>,
     private readonly cachedOriginalImage: CachedImage,
+    private readonly cachedOverlayImage: CachedImage,
   ) {}
 
   getCropDimensions(maxSize: number, width: number, height?: number): number[] {
@@ -72,11 +75,32 @@ export class Transformer {
 
     const transformer = sharp(originalImage).rotate()
 
+    if(options.blur) {
+      this.log('Apply blur: ' + options.blurSigma)
+      transformer.blur(options.blurSigma) 
+    }
+
+    if(options.greyscale) {
+      this.log('Convert to greyscale')
+      transformer.greyscale()
+    }
+
     if (!options.format) {
       options.format = (await transformer.metadata()).format as format
     }
 
-    if (options.crop) {
+    if(options.smartcrop) {
+      const [cropWidth, cropHeight] = this.getCropDimensions(
+        this.cropMaxSize,
+        options.width,
+        options.height,
+      )
+      const result = await smartcrop.crop(originalImage, { width: cropWidth, height: cropHeight })
+      const crop = result.topCrop;
+      transformer
+        .extract({ width: crop.width, height: crop.height, left: crop.x, top: crop.y })
+        .resize(cropWidth, cropWidth)
+    } else if (options.crop) {
       const [cropWidth, cropHeight] = this.getCropDimensions(
         this.cropMaxSize,
         options.width,
@@ -90,6 +114,18 @@ export class Transformer {
         fit: 'inside',
         withoutEnlargement: true,
       })
+    }
+
+    // Add overlay after cropping
+    if(options.overlay) {
+      this.log('Applying overlay')
+      var overlayImage = await this.cachedOverlayImage.fetch(options.overlayImage, imageAdapter)
+
+      overlayImage = await sharp(overlayImage).resize(options.overlayWidth, options.overlayHeight, {fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 0.0},}).flatten({ background: '#' + options.overlayBackgroundColor} ).toBuffer()
+    
+      if(overlayImage)
+         this.log('Overlay image retrieved')
+         transformer.composite([{ input: overlayImage, top: options.overlayTop, left: options.overlayLeft, }])
     }
 
     const image = await transformer

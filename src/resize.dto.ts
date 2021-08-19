@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable no-magic-numbers */
 import {
-  IsBoolean,
-  IsIn,
+  IsBoolean, IsIn,
   IsInt,
   IsNumber,
   IsOptional,
   IsString,
   Max,
-  Min,
+  Min
 } from 'class-validator'
 import 'reflect-metadata'
 import { GravityEnum } from 'sharp'
@@ -54,6 +53,11 @@ export class ResizeDto {
   @IsBoolean()
   public crop: boolean = false
 
+  @Transform((value) => value === 'true')
+  @IsBoolean()
+  @IsOptional()
+  public smartcrop?: boolean = false
+
   @IsIn([
     'north',
     'northeast',
@@ -71,4 +75,51 @@ export class ResizeDto {
 
   @IsUrl({ message: 'Invalid image url' })
   public url?: string
+
+  @Transform((value) => value === 'true')
+  @IsBoolean()
+  @IsOptional()
+
+  public overlay?: boolean = false
+
+  @IsString()
+  public overlayImage: string = ""
+
+  @Transform(Number)
+  @IsOptional()
+  public overlayHeight?: number
+
+  @Transform(Number)
+  @IsOptional()
+  public overlayWidth?: number
+  @Transform(Number)
+  @IsOptional()
+  public overlayTop?: number
+
+  @IsString()
+  @IsOptional()
+  public overlayBackgroundColor?: string
+
+  @Transform(Number)
+  @IsOptional()
+  public overlayLeft?: number
+
+
+  @Transform((value) => value === 'true')
+  @IsBoolean()
+  @IsOptional()
+  public blur?: boolean = false
+
+  @Transform((value) => Number(value))
+  @IsOptional()
+  @Min(0.3)
+  @Max(1000)
+
+  public blurSigma?: number;
+
+  @Transform((value) => value === 'true')
+  @IsBoolean()
+  @IsOptional()
+
+  public greyscale?: boolean = false
 }
